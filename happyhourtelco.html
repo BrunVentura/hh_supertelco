@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Hour Super Telco 🍻</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      color: #333;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #219150;
+    }
+    .results {
+      margin-top: 30px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .results h2 {
+      margin-bottom: 10px;
+      color: #34495e;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Happy Hour Super Telco 🍻</h1>
+
+  <form id="voteForm">
+    <label><input type="radio" name="location" value="Bar e Restaurante Manga"> A) Bar e Restaurante Manga</label>
+    <label><input type="radio" name="location" value="Bar Quattro"> B) Bar Quattro</label>
+    <label><input type="radio" name="location" value="Bar da Esquina"> C) Bar da Esquina</label>
+    <label><input type="radio" name="location" value="Outback"> D) Outback</label>
+    <label><input type="radio" name="location" value="Coco Bambu"> E) Coco Bambu</label>
+    <label>
+      <input type="radio" name="location" value="Outro"> F) Outro:
+      <input type="text" id="otherText" placeholder="Digite sua sugestão">
+    </label>
+    <button type="submit">Votar</button>
+  </form>
+
+  <div class="results">
+    <h2>Votos até agora:</h2>
+    <ul id="voteCounts"></ul>
+  </div>
+
+  <script>
+    const form = document.getElementById('voteForm');
+    const voteCounts = document.getElementById('voteCounts');
+    const otherText = document.getElementById('otherText');
+
+    const options = [
+      "Bar e Restaurante Manga",
+      "Bar Quattro",
+      "Bar da Esquina",
+      "Outback",
+      "Coco Bambu",
+      "Outro"
+    ];
+
+    let votes = JSON.parse(localStorage.getItem('happyHourVotes')) || {};
+
+    options.forEach(opt => {
+      if (!votes[opt]) votes[opt] = 0;
+    });
+
+    function updateResults() {
+      voteCounts.innerHTML = '';
+      options.forEach(opt => {
+        const li = document.createElement('li');
+        li.textContent = `${opt}: ${votes[opt]} voto(s)`;
+        voteCounts.appendChild(li);
+      });
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const selected = document.querySelector('input[name="location"]:checked');
+      if (selected) {
+        let choice = selected.value;
+        if (choice === "Outro" && otherText.value.trim()) {
+          choice = `Outro (${otherText.value.trim()})`;
+          if (!votes[choice]) votes[choice] = 0;
+        }
+        votes[choice]++;
+        localStorage.setItem('happyHourVotes', JSON.stringify(votes));
+        updateResults();
+        alert('Voto registrado com sucesso!');
+        form.reset();
+      } else {
+        alert('Por favor, selecione uma opção.');
+      }
+    });
+
+    updateResults();
+  </script>
+
+</body>
+</html>
